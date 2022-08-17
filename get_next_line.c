@@ -27,7 +27,7 @@ char	*get_next_line(int fd)
 	c = 0;
 	str = malloc(BUFFER_SIZE + 1);
 	x = 1;
-	if (fd == 1000 || fd < 0 || x == 0)
+	if (fd == 1000 || fd < 0)
 	{
 		free(str);
 		return (NULL);
