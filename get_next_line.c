@@ -6,81 +6,95 @@
 /*   By: marmoral <marmoral@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 17:20:38 by marmoral          #+#    #+#             */
-/*   Updated: 2022/08/18 00:31:53 by marmoral         ###   ########.fr       */
+/*   Updated: 2022/09/07 13:08:25 by marmoral         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
+
+size_t	ft_strlen(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+char	*lesen(int fd, char *save)
+{
+	int		x;
+	char	*buff;
+
+	buff = malloc(BUFFER_SIZE + 1);
+	if (!buff)
+		return (NULL);
+	x = 1;
+	while (!ft_strchr(save, '\n') && x != 0)
+	{
+		x = read(fd, buff, BUFFER_SIZE);
+		if (x == -1)
+		{
+			free(buff);
+			return (NULL);
+		}
+		buff[x] = 0;
+		save = new_strjoin(save, buff);
+	}
+	free(buff);
+	return (save);
+}
+
+char	*return_line(char *save)
+{
+	char	*rturn;
+	int		i;
+
+	i = 0;
+	if (!save[i])
+		return (NULL);
+	while (save[i] && save[i] != '\n')
+		i++;
+	i++;
+	return (rturn = ft_substr(save, 0, i));
+}
+
+char	*reset(char *save)
+{
+	char	*rest;
+	int		i;
+
+	i = 0;
+	while (save[i] && save[i] != '\n')
+		i++;
+	if (!save[i])
+	{
+		free (save);
+		return (NULL);
+	}
+	i++;
+	rest = ft_substr(save, i, ft_strlen(save));
+	free(save);
+	return (rest);
+	
+}
 
 char	*get_next_line(int fd)
 {
-	static char	buf[BUFFER_SIZE + 1];
-	char		*str;
-	static char	save[BUFFER_SIZE + 1];
-	int			x;
-	int			i;
-	int			c;
+	static char	*save;
+	char		*rturn;
 	
-	i = 0;
-	c = 0;
-	str = malloc(BUFFER_SIZE + 1);
-	x = 1;
-	if (fd == 1000 || fd < 0)
-	{
-		free(str);
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	}
-	if (save[0] != 0)
-	{
-		while (save[i])
-		{
-			str[i] = save[i];
-			i++;
-		}
-		str[i] = 0;
-		ft_bzero(save, ft_strlen(save));
-	}
-	if (ft_strchr(buf, '\n') && read(fd, buf, 1))
-	{
-		str[i++] = buf[0];
-	}
-	while (!(ft_strchr(buf, '\n')) && x > 0)
-	{
-		x = read(fd, buf, BUFFER_SIZE);
-		printf("%s\n", buf);
-		if (x > 0)
-		{
-			while (buf[c])
-				str[i++] = buf[c++];
-			c = 0;
-		}
-		if (x == 0)
-		{
-			free (str);
-			return (NULL);
-		}
-		printf("x = %i\nbsize = %i\n", x, BUFFER_SIZE);
-	}
-	str[i] = 0;
-	c = 0;
-	i = 0;
-	while (str[i] != '\n')
-		i++;
-	x = i;
-	x++;
-	if (str[i + 1] != 0)
-	{
-		i++;
-		while (str[i])
-			save[c++] = str[i++];
-		save[c] = 0;
-		while (str[x])
-		str[x++] = 0;
-	}
-	return (str);
+	save = lesen(fd, save);
+	if (!save)
+		return (NULL);
+	rturn = return_line(save);
+	save = reset(save);
+	return (rturn);
 }
+
 /*
 int	main()
 {
