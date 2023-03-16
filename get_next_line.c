@@ -6,7 +6,7 @@
 /*   By: marmoral <marmoral@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 17:20:38 by marmoral          #+#    #+#             */
-/*   Updated: 2022/09/07 13:08:25 by marmoral         ###   ########.fr       */
+/*   Updated: 2023/03/16 19:31:36 by marmoral         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,13 @@ char	*reset(char *save)
 	rest = ft_substr(save, i, ft_strlen(save));
 	free(save);
 	return (rest);
-	
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*save;
 	char		*rturn;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	save = lesen(fd, save);
@@ -124,4 +123,7 @@ int	main()
 	return (0);
 }
 */
-//gcc -Wall -Werror -Wextra -D BUFFER_SIZE=1 get_next_line.c get_next_line_utils.c && ./a.out
+/*
+gcc -Wall -Werror -Wextra -D BUFFER_SIZE=1 get_next_line.c 
+get_next_line_utils.c && ./a.out
+*/
